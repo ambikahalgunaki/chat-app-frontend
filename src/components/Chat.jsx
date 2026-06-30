@@ -195,7 +195,8 @@ const Chat = ({ user, selectedUser, onlineUsers, initialMessages, onBack, allUse
       <div className="chat-header">
         <button className="back-btn" onClick={onBack}>←</button>
         <div className="avatar">
-          {selectedUser.profiePic ? <img src={`http://localhost:3000${selectedUser.profiePic}`} alt={selectedUser.name} /> : selectedUser.name?.charAt(0)}
+          {/* ✅ FIXED: Removed localhost:3000 - Just use the path */}
+          {selectedUser.profiePic ? <img src={selectedUser.profiePic} alt={selectedUser.name} /> : selectedUser.name?.charAt(0)}
           {onlineUsers.includes(selectedUser._id) && <span className="online-dot"></span>}
         </div>
         <div className="chat-header-info">
@@ -211,15 +212,12 @@ const Chat = ({ user, selectedUser, onlineUsers, initialMessages, onBack, allUse
           <div 
             key={msg._id || idx} 
             className={`message ${msg.sender === user.id ? 'sent' : 'received'}`}
-            // FIX 1: Removed !msg.isDeleted so right-click works on deleted messages
             onContextMenu={(e) => handleContextMenu(e, msg)}
           >
-            {/* FIX 2: Removed !msg.isDeleted so the arrow shows on deleted messages */}
             <button className="message-dropdown-btn" onClick={(e) => handleContextMenu(e, msg)}>▾</button>
             
             <p className={msg.isDeleted ? 'deleted-message' : ''}>{msg.message}</p>
             
-            {/* Show time and ticks for normal messages */}
             {!msg.isDeleted && (
               <div className="message-meta">
                 <span className="message-time">{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
@@ -227,7 +225,6 @@ const Chat = ({ user, selectedUser, onlineUsers, initialMessages, onBack, allUse
               </div>
             )}
             
-            {/* Show time for deleted messages (like WhatsApp) */}
             {msg.isDeleted && (
               <div className="message-meta deleted-meta">
                 <span className="message-time">{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
@@ -241,7 +238,6 @@ const Chat = ({ user, selectedUser, onlineUsers, initialMessages, onBack, allUse
       {/* Context Menu Dropdown */}
       {contextMenu.visible && (
         <div className="context-menu" style={{ top: `${contextMenu.y}px`, left: `${contextMenu.x}px` }}>
-          {/* FIX 3: Only show Reply/Copy/Forward if the message is NOT deleted */}
           {!contextMenu.message.isDeleted && (
             <>
               <div className="context-menu-item" onClick={handleReply}>Reply</div>
@@ -249,7 +245,6 @@ const Chat = ({ user, selectedUser, onlineUsers, initialMessages, onBack, allUse
               <div className="context-menu-item" onClick={handleForward}>Forward</div>
             </>
           )}
-          {/* Always show Delete option */}
           <div className="context-menu-item context-item-delete" onClick={openDeleteModal}>Delete</div>
         </div>
       )}
@@ -259,7 +254,6 @@ const Chat = ({ user, selectedUser, onlineUsers, initialMessages, onBack, allUse
         <div className="delete-modal-overlay" onClick={() => setMessageToDelete(null)}>
           <div className="delete-modal" onClick={(e) => e.stopPropagation()}>
             <h3>Delete message?</h3>
-            {/* Only show "Delete for everyone" if it's not already deleted and you are the sender */}
             {!messageToDelete.isDeleted && messageToDelete.sender === user.id && (
               <button className="btn-delete-everyone" onClick={deleteForEveryone}>Delete for everyone</button>
             )}
@@ -278,7 +272,8 @@ const Chat = ({ user, selectedUser, onlineUsers, initialMessages, onBack, allUse
               {allUsers?.map(u => (
                 <div key={u._id} className="forward-user-item" onClick={() => forwardToUser(u)}>
                   <div className="avatar small">
-                    {u.profiePic ? <img src={`http://localhost:3000${u.profiePic}`} alt={u.name} /> : u.name?.charAt(0)}
+                    {/* ✅ FIXED: Removed localhost:3000 */}
+                    {u.profiePic ? <img src={u.profiePic} alt={u.name} /> : u.name?.charAt(0)}
                   </div>
                   <span>{u.name}</span>
                 </div>

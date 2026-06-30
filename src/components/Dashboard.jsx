@@ -4,20 +4,6 @@ import { connectSocket, disconnectSocket } from '../services/socket';
 import Chat from './Chat';
 import Profile from './Profile';
 
-const formatLastSeen = (dateStr) => {
-    if (!dateStr) return 'Offline';
-    const now = new Date();
-    const date = new Date(dateStr);
-    const diffMs = now - date;
-    const diffMins = Math.floor(diffMs / 60000);
-    if (diffMins < 1) return 'Last seen just now';
-    if (diffMins < 60) return `Last seen ${diffMins}m ago`;
-    const diffHours = Math.floor(diffMins / 60);
-    if (diffHours < 24) return `Last seen ${diffHours}h ago`;
-    return `Last seen ${date.toLocaleDateString()}`;
-};
-
-// 1. ADDED theme and toggleTheme to props
 const Dashboard = ({ user, onLogout, onUpdateUser, theme, toggleTheme }) => {
   const [sidebarData, setSidebarData] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -41,7 +27,6 @@ const Dashboard = ({ user, onLogout, onUpdateUser, theme, toggleTheme }) => {
     const socket = connectSocket(user.id);
     socket.on('onlineUsers', (usersList) => setOnlineUsers(usersList));
 
-    // Refresh sidebar when new message arrives
     socket.on('receiverMessage', () => fetchSidebarData());
     socket.on('messageDelivered', () => fetchSidebarData());
     socket.on('messageRead', () => fetchSidebarData());
@@ -82,13 +67,16 @@ const Dashboard = ({ user, onLogout, onUpdateUser, theme, toggleTheme }) => {
         <div className="sidebar-header">
           <div className="user-info">
             <div className="avatar uploadable" onClick={() => setShowProfile(true)}>
-              {user.profiePic ? <img src={`http://localhost:3000${user.profiePic}`} alt={user.name} /> : user.name?.charAt(0)}
+              {user.profiePic ? 
+                // ✅ REMOVED localhost:3000
+                <img src={`${user.profiePic}`} alt={user.name} /> : 
+                user.name?.charAt(0)
+              }
               <div className="upload-overlay">📷</div>
             </div>
             <h3>{user.name}</h3>
           </div>
           
-          {/* 2. ADDED Theme Toggle and wrapped buttons */}
           <div className="sidebar-actions">
             <button onClick={toggleTheme} className="theme-toggle-btn" title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}>
               {theme === 'light' ? '🌙' : '☀️'}
@@ -109,7 +97,11 @@ const Dashboard = ({ user, onLogout, onUpdateUser, theme, toggleTheme }) => {
               return (
                 <div key={u._id} className={`chat-list-item ${selectedUser?._id === u._id ? 'active' : ''}`} onClick={() => handleSelectUser(u)}>
                   <div className="avatar">
-                    {u.profiePic ? <img src={`http://localhost:3000${u.profiePic}`} alt={u.name} /> : u.name?.charAt(0)}
+                    {u.profiePic ? 
+                      // ✅ REMOVED localhost:3000
+                      <img src={`${u.profiePic}`} alt={u.name} /> : 
+                      u.name?.charAt(0)
+                    }
                     {isOnline && <span className="online-dot"></span>}
                   </div>
                   <div className="chat-list-item-info">

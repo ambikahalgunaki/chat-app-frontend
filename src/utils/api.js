@@ -1,7 +1,8 @@
 import axios from 'axios'
 
+// ✅ CHANGE THIS to your Render URL with /api
 const API = axios.create({
-  baseURL: 'https://chat-app-backend-nw6m.onrender.com',
+  baseURL: 'https://chat-app-backend-nw6m.onrender.com/api', // ✅ Added /api
 })
 
 // Request interceptor to attach the token to every API call
@@ -19,7 +20,7 @@ API.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('token')
-      localStorage.removeItem('user') // Also remove user data on auth failure
+      localStorage.removeItem('user')
       window.location.href = '/login'
     }
     return Promise.reject(error)

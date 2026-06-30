@@ -56,10 +56,11 @@ const Profile = ({ user, onUpdateUser, onClose }) => {
       <div className="profile-modal-card" onClick={(e) => e.stopPropagation()}>
         <h2>Profile Settings</h2>
         
-        {/* NEW: Avatar Preview Circle */}
+        {/* Avatar Preview Circle */}
         <div className="profile-avatar-preview" onClick={() => fileInputRef.current.click()}>
           {user.profiePic ? (
-            <img src={`http://localhost:3000${user.profiePic}`} alt="Profile" />
+            // ✅ REMOVED localhost:3000 - Use just the path
+            <img src={`${user.profiePic}`} alt="Profile" />
           ) : (
             user.name?.charAt(0)
           )}
